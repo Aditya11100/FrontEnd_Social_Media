@@ -13,6 +13,12 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import { validations } from "../../Utils/functions";
+import { useDispatch } from "react-redux";
+import { loginUser, verifyOtpApi } from "../../Redux/login";
+import { IconButton, InputAdornment, Modal } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import OtpInput from "../../component/OtpInput";
 
 function Copyright(props: any) {
   return (
@@ -37,21 +43,69 @@ const defaultTheme = createTheme();
 
 export default function Login() {
   const navigate = useNavigate();
-  // const [email,setEmail]=React.useState('');
-  // const [password,setPassword]=React.useState('');
+  const dispatch = useDispatch<any>();
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [otp, setOtp] = React.useState("");
 
-  React.useEffect(() => {
-    console.log("Login");
-  }, []);
+  const [formValue, setFormValue] = React.useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = React.useState({
+    email: false,
+    password: false,
+  });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("event.currentTarget", event.currentTarget);
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const errorObj = {
+      email: false,
+      password: false,
+    };
+    if (!validations.email.test(formValue.email)) {
+      errorObj.email = true;
+    }
+    if (!validations.password.test(formValue.password)) {
+      errorObj.password = true;
+    }
+
+    if (errorObj.email || errorObj.password) {
+      setError(errorObj);
+    } else {
+      const data = {
+        body: formValue,
+        successCallback: successCallback,
+        verifyOtpException: () => setOpenModal(true),
+      };
+      dispatch(loginUser(data));
+    }
+  };
+
+  const handleChange = (name: string, value: string) => {
+    let newFormData: any = {
+      ...formValue,
+    };
+    newFormData[name] = value;
+    setFormValue(newFormData);
+  };
+
+  const verifyOtp = () => {
+    const data = {
+      body: {
+        email: formValue.email,
+        otp: Number(otp),
+      },
+      successCallback: successCallback,
+    };
+    dispatch(verifyOtpApi(data));
+  };
+
+  const successCallback = (response: any) => {
+    if (openModal) {
+      setOpenModal(false);
+    }
+    navigate("/dashboard");
   };
 
   return (
@@ -87,6 +141,15 @@ export default function Login() {
               name="email"
               autoComplete="email"
               autoFocus
+              value={formValue.email}
+              onChange={(event) => {
+                handleChange(event.target.name, event.target.value);
+                if (error.password) {
+                  setError({ ...error, email: false });
+                }
+              }}
+              error={error.email}
+              helperText={error.email ? "Invalid Email" : null}
             />
             <TextField
               margin="normal"
@@ -94,9 +157,31 @@ export default function Login() {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
+              value={formValue.password}
+              onChange={(event) => {
+                handleChange(event.target.name, event.target.value);
+                if (error.password) {
+                  setError({ ...error, password: false });
+                }
+              }}
+              error={error.password}
+              helperText={error.password ? "Invalid Password" : null}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={() => setShowPassword(!showPassword)}
+                      onMouseDown={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
@@ -130,6 +215,46 @@ export default function Login() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
+      <Modal
+        open={openModal}
+        // onClose={() => setOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={modalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Please enter OTP sent in your E-Mail.
+          </Typography>
+          <OtpInput
+            separator={<span>-</span>}
+            value={otp}
+            onChange={setOtp}
+            length={4}
+          />
+          <Button
+            type="submit"
+            fullWidth={false}
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={() => verifyOtp()}
+            disabled={otp.length !== 4}
+          >
+            Submit
+          </Button>
+        </Box>
+      </Modal>
     </ThemeProvider>
   );
 }
+
+const modalStyle = {
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
