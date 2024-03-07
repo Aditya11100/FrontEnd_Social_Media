@@ -128,7 +128,10 @@ const userSlice = createSlice({
         state.loggedIn = true;
         state.token = action.payload?.token;
         state.userData = action.payload?.data;
-        sessionStorage.setItem("userData", action.payload?.data);
+        sessionStorage.setItem(
+          "userData",
+          JSON.stringify(action.payload?.data)
+        );
         sessionStorage.setItem("token", action.payload?.token);
       })
       .addCase(loginUser.rejected, (state, action: any) => {
@@ -148,7 +151,10 @@ const userSlice = createSlice({
         state.loggedIn = true;
         state.token = action.payload?.token;
         state.userData = action.payload?.data;
-        sessionStorage.setItem("userData", action.payload?.data);
+        sessionStorage.setItem(
+          "userData",
+          JSON.stringify(action.payload?.data)
+        );
         sessionStorage.setItem("token", action.payload?.token);
       })
       .addCase(verifyOtpApi.rejected, (state, action: any) => {

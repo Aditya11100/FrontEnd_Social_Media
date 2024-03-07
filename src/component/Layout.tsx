@@ -91,7 +91,7 @@ const Layout = (props: Props) => {
   const logout = () => {
     setLogoutModal(false);
     sessionStorage.removeItem("userData");
-    sessionStorage.removeItem("userData");
+    sessionStorage.removeItem("token");
     dispatch(resetState({}));
     showToast("User Logged-Out Successfully", "success");
   };
@@ -117,8 +117,8 @@ const Layout = (props: Props) => {
           </ListItem>
         ))}
       </List>
-      {/* <Divider />
-      <List>
+      <Divider />
+      {/* <List>
         {["All mail", "Trash", "Spam"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
