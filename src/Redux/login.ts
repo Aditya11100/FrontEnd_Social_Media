@@ -112,6 +112,7 @@ const userSlice = createSlice({
     resetState: (state, action) => {
       state.token = null;
       state.userData = null;
+      state.loggedIn = false;
     },
   },
   extraReducers: (builder) => {
@@ -128,11 +129,11 @@ const userSlice = createSlice({
         state.loggedIn = true;
         state.token = action.payload?.token;
         state.userData = action.payload?.data;
-        sessionStorage.setItem(
-          "userData",
-          JSON.stringify(action.payload?.data)
-        );
-        sessionStorage.setItem("token", action.payload?.token);
+        // sessionStorage.setItem(
+        //   "userData",
+        //   JSON.stringify(action.payload?.data)
+        // );
+        // sessionStorage.setItem("token", action.payload?.token);
       })
       .addCase(loginUser.rejected, (state, action: any) => {
         state.loading = false;
@@ -151,11 +152,11 @@ const userSlice = createSlice({
         state.loggedIn = true;
         state.token = action.payload?.token;
         state.userData = action.payload?.data;
-        sessionStorage.setItem(
-          "userData",
-          JSON.stringify(action.payload?.data)
-        );
-        sessionStorage.setItem("token", action.payload?.token);
+        // sessionStorage.setItem(
+        //   "userData",
+        //   JSON.stringify(action.payload?.data)
+        // );
+        // sessionStorage.setItem("token", action.payload?.token);
       })
       .addCase(verifyOtpApi.rejected, (state, action: any) => {
         state.loading = false;

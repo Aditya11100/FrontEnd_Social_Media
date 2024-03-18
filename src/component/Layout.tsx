@@ -90,8 +90,8 @@ const Layout = (props: Props) => {
 
   const logout = () => {
     setLogoutModal(false);
-    sessionStorage.removeItem("userData");
-    sessionStorage.removeItem("token");
+    // sessionStorage.removeItem("userData");
+    // sessionStorage.removeItem("token");
     dispatch(resetState({}));
     showToast("User Logged-Out Successfully", "success");
   };

@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Posts from "../../component/Posts";
+import { Button, TextField } from "@mui/material";
 
 const drawerWidth = 240;
 
 const Dashboard = (props: any) => {
+  const [post, setPost] = useState("");
+
   return (
     <Box
       component="main"
@@ -16,7 +20,7 @@ const Dashboard = (props: any) => {
       }}
     >
       <Toolbar />
-      <Typography paragraph>
+      {/* <Typography paragraph>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus
         non enim praesent elementum facilisis leo vel. Risus at ultrices mi
@@ -43,7 +47,43 @@ const Dashboard = (props: any) => {
         Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra
         maecenas accumsan lacus vel facilisis. Nulla posuere sollicitudin
         aliquam ultrices sagittis orci a.
-      </Typography>
+      </Typography> */}
+      <Box
+        sx={{
+          width: {
+            sm: "100%", // theme.breakpoints.up('sm')
+            md: 600,
+          },
+          margin: "auto",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "white",
+            boxShadow: 3,
+            padding: 2,
+            borderRadius: 1,
+          }}
+        >
+          <TextField
+            fullWidth
+            label="Add Post"
+            id="fullWidth"
+            variant="standard"
+            value={post}
+            onChange={(event) => setPost(event.target.value)}
+          />
+          <Button disabled={post === ""} onClick={() => setPost("")}>
+            Post
+          </Button>
+        </Box>
+        <Posts />
+        <Posts />
+        <Posts />
+      </Box>
     </Box>
   );
 };

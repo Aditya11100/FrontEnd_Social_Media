@@ -1,0 +1,9 @@
+.content-css{
+    font-size: 10 !important;
+    color: rgb(99, 97, 97);
+}
+
+.show-more-less{
+    cursor: pointer;
+    color: blue;
+}
