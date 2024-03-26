@@ -1,7 +1,7 @@
 import React from "react";
 import { Provider } from "react-redux";
 import { persistor, store } from "./Redux";
-import NavigationRoutes from "./NavigationRoutes/indes";
+import NavigationRoutes from "./NavigationRoutes";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PersistGate } from "redux-persist/integration/react";

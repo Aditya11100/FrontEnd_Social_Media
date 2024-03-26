@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { hideLoader, showLoader } from "./loader";
-import { ApiConfig } from "../Service/api";
+import { ApiConfig, setTokenHeader } from "../Service/api";
 import { baseUrl, url } from "../Service/url";
 import { showToast } from "../Utils/functions";
 
@@ -129,6 +129,7 @@ const userSlice = createSlice({
         state.loggedIn = true;
         state.token = action.payload?.token;
         state.userData = action.payload?.data;
+        setTokenHeader(action.payload?.token);
         // sessionStorage.setItem(
         //   "userData",
         //   JSON.stringify(action.payload?.data)
@@ -152,6 +153,7 @@ const userSlice = createSlice({
         state.loggedIn = true;
         state.token = action.payload?.token;
         state.userData = action.payload?.data;
+        setTokenHeader(action.payload?.token);
         // sessionStorage.setItem(
         //   "userData",
         //   JSON.stringify(action.payload?.data)

@@ -1,14 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Posts from "../../component/Posts";
 import { Button, TextField } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { getPosts } from "../../Redux/posts";
 
 const drawerWidth = 240;
 
 const Dashboard = (props: any) => {
   const [post, setPost] = useState("");
+  const dispatch = useDispatch<any>();
+  const postData = useSelector((state: any) => state?.postReducer?.postData);
+
+  useEffect(() => {
+    const params = "?page=1&limit=10";
+    fetchPosts(params);
+  }, []);
+
+  const fetchPosts = (params: string) => {
+    const obj = {
+      // successCallback: successCallback,
+      params: params,
+    };
+    dispatch(getPosts(obj));
+  };
+
+  const successCallback = (respoonse: any) => {};
 
   return (
     <Box
@@ -80,9 +99,14 @@ const Dashboard = (props: any) => {
             Post
           </Button>
         </Box>
+        {postData?.data?.length > 0
+          ? postData?.data?.map((item: any) => (
+              <Posts key={item.id} post={item} />
+            ))
+          : null}
+        {/* <Posts />
         <Posts />
-        <Posts />
-        <Posts />
+        <Posts /> */}
       </Box>
     </Box>
   );

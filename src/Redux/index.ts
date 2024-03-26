@@ -7,6 +7,7 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer, persistStore } from "redux-persist";
 import loginReducer from "./login";
 import loaderReducer from "./loader";
+import postReducer from "./posts";
 
 const persistConfig = {
   key: "root",
@@ -16,6 +17,7 @@ const persistConfig = {
 const combinedReducer = combineReducers({
   loginReducer,
   loaderReducer,
+  postReducer,
 });
 
 // persistedReducer only needed when want ro persist data

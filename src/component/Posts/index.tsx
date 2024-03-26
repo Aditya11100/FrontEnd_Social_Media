@@ -1,15 +1,52 @@
 import { Box, Button, SxProps, TextField, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SeeMore from "../SeeMore";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import CommentIcon from "@mui/icons-material/Comment";
 import Comment from "./Comment";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import { useDispatch, useSelector } from "react-redux";
+import { dislikePosts, likePosts } from "../../Redux/posts";
+dayjs.extend(advancedFormat);
 
-const Posts = () => {
-  const [like, setLike] = useState(false);
+interface PostsProps {
+  post: any;
+}
+
+const Posts = ({ post }: PostsProps) => {
+  const userData = useSelector((state: any) => state?.loginReducer?.userData);
+  const [like, setLike] = useState(post?.likes?.includes(userData?._id));
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState("");
+  const dispatch = useDispatch<any>();
+
+  const likePost = () => {
+    const data = {
+      id: post?._id,
+      successCallback: likeCallback,
+      errorCallback: dislikeCallback,
+    };
+    dispatch(likePosts(data));
+  };
+
+  const dislikePost = () => {
+    const data = {
+      id: post?._id,
+      successCallback: dislikeCallback,
+      errorCallback: likeCallback,
+    };
+    dispatch(dislikePosts(data));
+  };
+
+  const likeCallback = (data: any) => {
+    setLike(true);
+  };
+
+  const dislikeCallback = (data: any) => {
+    setLike(false);
+  };
 
   return (
     <Box sx={boxContainer}>
@@ -35,28 +72,18 @@ const Posts = () => {
             style={{ cursor: "pointer" }}
             variant="subtitle2"
           >
-            User Name
+            {`${post?.postedBy?.firstName} ${post?.postedBy?.lastName}`}
           </Typography>
           <Typography
             style={{ fontSize: 10 }}
             variant="caption"
             display="block"
           >
-            12th Sept, 2024
+            {dayjs(post?.date).format("Do MMM, YYYY")}
           </Typography>
         </Box>
       </Box>
-      <SeeMore>
-        Lorem Ipsum is simply dummy text of the printing and typesetting
-        industry. Lorem Ipsum has been the industry's standard dummy text ever
-        since the 1500s, when an unknown printer took a galley of type and
-        scrambled it to make a type specimen book. It has survived not only five
-        centuries, but also the leap into electronic typesetting, remaining
-        essentially unchanged. It was popularised in the 1960s with the release
-        of Letraset sheets containing Lorem Ipsum passages, and more recently
-        with desktop publishing software like Aldus PageMaker including versions
-        of Lorem Ipsum.
-      </SeeMore>
+      <SeeMore>{post?.post}</SeeMore>
       <Box
         component="img"
         sx={{
@@ -77,6 +104,7 @@ const Posts = () => {
             justifyContent: "center",
             alignItems: "center",
           }}
+          onClick={() => (like ? dislikePost() : likePost())}
         >
           <ThumbUpIcon
             style={{ cursor: "pointer", color: like ? "#1780d1" : "black" }}
