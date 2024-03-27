@@ -8,7 +8,7 @@ import Comment from "./Comment";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { dislikePosts, likePosts } from "../../Redux/posts";
+import { commentPost, dislikePosts, likePosts } from "../../Redux/posts";
 dayjs.extend(advancedFormat);
 
 interface PostsProps {
@@ -20,6 +20,7 @@ const Posts = ({ post }: PostsProps) => {
   const [like, setLike] = useState(post?.likes?.includes(userData?._id));
   const [showComment, setShowComment] = useState(false);
   const [comment, setComment] = useState("");
+  const [showSending, setShowSending] = useState(false);
   const dispatch = useDispatch<any>();
 
   const likePost = () => {
@@ -46,6 +47,23 @@ const Posts = ({ post }: PostsProps) => {
 
   const dislikeCallback = (data: any) => {
     setLike(false);
+  };
+
+  const addComment = () => {
+    setShowSending(true);
+    const data = {
+      body: {
+        body: comment,
+      },
+      id: post?._id,
+      successCallback: commentCallback,
+    };
+    dispatch(commentPost(data));
+  };
+
+  const commentCallback = (response: any) => {
+    setShowSending(false);
+    setComment("");
   };
 
   return (
@@ -140,15 +158,33 @@ const Posts = ({ post }: PostsProps) => {
               value={comment}
               onChange={(event) => setComment(event.target.value)}
             />
-            <Button disabled={comment === ""}>Post</Button>
+            <Button disabled={comment === ""} onClick={addComment}>
+              Post
+            </Button>
           </Box>
           <Box sx={{ minHeight: 50, maxHeight: 250, overflow: "scroll" }}>
+            {showSending && (
+              <Comment isSending={true} comment={{ body: comment }} />
+            )}
+
+            {post?.comments?.length > 0 ? (
+              post?.comments?.map((item: any) => <Comment comment={item} />)
+            ) : (
+              <Typography
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  marginTop: 20,
+                }}
+              >
+                No comments yet.
+              </Typography>
+            )}
+            {/* <Comment />
             <Comment />
             <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
+            <Comment /> */}
           </Box>
         </Box>
       )}

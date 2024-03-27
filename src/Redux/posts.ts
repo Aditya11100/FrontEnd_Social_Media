@@ -31,13 +31,11 @@ export const likePosts = createAsyncThunk(
   "posts/likePosts",
   async (data: any, { dispatch }) => {
     try {
-      dispatch(showLoader());
       const response: any = await apiConfig.putJSON(
         {},
         baseUrl + url.likePosts + "/" + data?.id
       );
       data?.successCallback(response);
-      dispatch(hideLoader());
       return response;
     } catch (error: any) {
       showToast(
@@ -45,7 +43,6 @@ export const likePosts = createAsyncThunk(
         "error"
       );
       data?.errorCallback(error);
-      dispatch(hideLoader());
     }
   }
 );
@@ -54,13 +51,11 @@ export const dislikePosts = createAsyncThunk(
   "posts/dislikePosts",
   async (data: any, { dispatch }) => {
     try {
-      dispatch(showLoader());
       const response: any = await apiConfig.putJSON(
         {},
         baseUrl + url.dislikePosts + "/" + data?.id
       );
       data?.successCallback(response);
-      dispatch(hideLoader());
       return response;
     } catch (error: any) {
       showToast(
@@ -68,7 +63,6 @@ export const dislikePosts = createAsyncThunk(
         "error"
       );
       data?.errorCallback(error);
-      dispatch(hideLoader());
     }
   }
 );
@@ -77,21 +71,18 @@ export const commentPost = createAsyncThunk(
   "posts/commentPost",
   async (data: any, { dispatch }) => {
     try {
-      dispatch(showLoader());
       const response: any = await apiConfig.putJSON(
-        {},
+        data?.body,
         baseUrl + url.commentPost + "/" + data?.id
       );
-      data?.successCallback(response);
-      dispatch(hideLoader());
+      data?.successCallback?.(response);
+      dispatch(updatePostData(response));
       return response;
     } catch (error: any) {
       showToast(
         error?.response?.data?.message || "Something went wrong",
         "error"
       );
-      data?.errorCallback(error);
-      dispatch(hideLoader());
     }
   }
 );
@@ -109,6 +100,19 @@ const postsSlice = createSlice({
   },
   reducers: {
     resetState: (state, action) => {},
+    updatePostData: (state, action) => {
+      let postarray = current(state.postData?.data);
+      postarray = postarray?.map((item: any) => {
+        if (item?._id === action.payload?.data?.post?._id)
+          return action.payload?.data?.post;
+        else return item;
+      });
+
+      state.postData = {
+        ...state.postData,
+        data: postarray,
+      };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -182,6 +186,6 @@ const postsSlice = createSlice({
   },
 });
 
-export const { resetState } = postsSlice.actions;
+export const { resetState, updatePostData } = postsSlice.actions;
 
 export default postsSlice.reducer;

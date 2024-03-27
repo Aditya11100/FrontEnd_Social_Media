@@ -1,7 +1,15 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import { useSelector } from "react-redux";
 
-const Comment = () => {
+interface CommentProps {
+  isSending?: boolean;
+  comment?: any;
+}
+
+const Comment = ({ isSending, comment }: CommentProps) => {
+  const userData = useSelector((state: any) => state?.loginReducer?.userData);
+
   return (
     <Box
       sx={{
@@ -30,11 +38,23 @@ const Comment = () => {
           padding: 1,
         }}
       >
-        <Typography style={{ fontSize: 14 }}>User Name 1</Typography>
-        <Typography style={{ fontSize: 12 }}>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s,
+        <Typography
+          style={{
+            fontSize: 14,
+            fontStyle: isSending ? "italic" : "normal",
+            color: isSending ? "rgba(110, 110, 110, 1)" : "black",
+          }}
+        >
+          User Name 1
+        </Typography>
+        <Typography
+          style={{
+            fontSize: 12,
+            fontStyle: isSending ? "italic" : "normal",
+            color: isSending ? "rgba(110, 110, 110, 1)" : "black",
+          }}
+        >
+          {comment?.body}
         </Typography>
       </Box>
     </Box>
