@@ -45,7 +45,7 @@ const Comment = ({ isSending, comment }: CommentProps) => {
             color: isSending ? "rgba(110, 110, 110, 1)" : "black",
           }}
         >
-          User Name 1
+          {`${comment?.user?.firstName} ${comment?.user?.lastName}`}
         </Typography>
         <Typography
           style={{
