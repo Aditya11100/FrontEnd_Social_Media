@@ -87,6 +87,25 @@ export const commentPost = createAsyncThunk(
   }
 );
 
+export const deleteCommentPost = createAsyncThunk(
+  "posts/deleteCommentPost",
+  async (data: any, { dispatch }) => {
+    try {
+      const response: any = await apiConfig.putJSON(
+        data?.body,
+        baseUrl + url.deleteCommentPost + "/" + data?.id + "/" + data?.commentId
+      );
+      dispatch(updatePostData(response));
+      return response;
+    } catch (error: any) {
+      showToast(
+        error?.response?.data?.message || "Something went wrong",
+        "error"
+      );
+    }
+  }
+);
+
 // Create the user slice
 const postsSlice = createSlice({
   name: "posts",

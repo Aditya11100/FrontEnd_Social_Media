@@ -8,7 +8,12 @@ import Comment from "./Comment";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { commentPost, dislikePosts, likePosts } from "../../Redux/posts";
+import {
+  commentPost,
+  deleteCommentPost,
+  dislikePosts,
+  likePosts,
+} from "../../Redux/posts";
 dayjs.extend(advancedFormat);
 
 interface PostsProps {
@@ -64,6 +69,14 @@ const Posts = ({ post }: PostsProps) => {
   const commentCallback = (response: any) => {
     setShowSending(false);
     setComment("");
+  };
+
+  const deleteComment = (item: any) => {
+    const data = {
+      id: post?._id,
+      commentId: item?._id,
+    };
+    dispatch(deleteCommentPost(data));
   };
 
   return (
@@ -168,7 +181,13 @@ const Posts = ({ post }: PostsProps) => {
             )}
 
             {post?.comments?.length > 0 ? (
-              post?.comments?.map((item: any) => <Comment comment={item} />)
+              post?.comments?.map((item: any) => (
+                <Comment
+                  key={item?._id}
+                  comment={item}
+                  deleteComment={() => deleteComment(item)}
+                />
+              ))
             ) : (
               <Typography
                 style={{

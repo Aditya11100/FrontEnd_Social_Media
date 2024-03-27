@@ -1,13 +1,15 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useSelector } from "react-redux";
 
 interface CommentProps {
   isSending?: boolean;
   comment?: any;
+  deleteComment?: () => void;
 }
 
-const Comment = ({ isSending, comment }: CommentProps) => {
+const Comment = ({ isSending, comment, deleteComment }: CommentProps) => {
   const userData = useSelector((state: any) => state?.loginReducer?.userData);
 
   return (
@@ -45,7 +47,9 @@ const Comment = ({ isSending, comment }: CommentProps) => {
             color: isSending ? "rgba(110, 110, 110, 1)" : "black",
           }}
         >
-          {`${comment?.user?.firstName} ${comment?.user?.lastName}`}
+          {isSending
+            ? `${userData?.firstName} ${userData?.lastName}`
+            : `${comment?.user?.firstName} ${comment?.user?.lastName}`}
         </Typography>
         <Typography
           style={{
@@ -57,6 +61,12 @@ const Comment = ({ isSending, comment }: CommentProps) => {
           {comment?.body}
         </Typography>
       </Box>
+      {!isSending && (
+        <DeleteIcon
+          style={{ cursor: "pointer", height: 18 }}
+          onClick={() => deleteComment?.()}
+        />
+      )}
     </Box>
   );
 };
