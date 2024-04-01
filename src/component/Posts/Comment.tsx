@@ -61,7 +61,7 @@ const Comment = ({ isSending, comment, deleteComment }: CommentProps) => {
           {comment?.body}
         </Typography>
       </Box>
-      {!isSending && (
+      {!isSending && comment?.user?._id === userData?._id && (
         <DeleteIcon
           style={{ cursor: "pointer", height: 18 }}
           onClick={() => deleteComment?.()}

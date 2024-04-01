@@ -189,6 +189,7 @@ const Posts = ({ post, fromUserData }: PostsProps) => {
                   key={item?._id}
                   comment={item}
                   deleteComment={() => deleteComment(item)}
+                  isSending={false}
                 />
               ))
             ) : (
