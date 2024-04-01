@@ -106,6 +106,27 @@ export const deleteCommentPost = createAsyncThunk(
   }
 );
 
+export const addPost = createAsyncThunk(
+  "posts/addPost",
+  async (data: any, { dispatch }) => {
+    try {
+      const response: any = await apiConfig.postJSON(
+        data?.body,
+        baseUrl + url.addPost
+      );
+      console.log("response", response);
+      data?.successCallback?.(response);
+      showToast(response?.data?.message, "success");
+      return response;
+    } catch (error: any) {
+      showToast(
+        error?.response?.data?.message || "Something went wrong",
+        "error"
+      );
+    }
+  }
+);
+
 // Create the user slice
 const postsSlice = createSlice({
   name: "posts",

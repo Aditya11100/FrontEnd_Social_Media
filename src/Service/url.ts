@@ -9,4 +9,5 @@ export const url = {
   dislikePosts: "api/posts/dislike",
   commentPost: "api/posts/addComment",
   deleteCommentPost: "api/posts/deleteComment",
+  addPost: "api/posts/createPost",
 };

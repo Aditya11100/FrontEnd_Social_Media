@@ -5,18 +5,22 @@ import Typography from "@mui/material/Typography";
 import Posts from "../../component/Posts";
 import { Button, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { getPosts } from "../../Redux/posts";
+import { addPost, getPosts } from "../../Redux/posts";
 
 const drawerWidth = 240;
 
 const Dashboard = (props: any) => {
   const [post, setPost] = useState("");
+  const [recentPost, setRecentPost] = useState({});
   const dispatch = useDispatch<any>();
   const postData = useSelector((state: any) => state?.postReducer?.postData);
 
   useEffect(() => {
     const params = "?page=1&limit=10";
     fetchPosts(params);
+    return () => {
+      setRecentPost({});
+    };
   }, []);
 
   const fetchPosts = (params: string) => {
@@ -28,6 +32,21 @@ const Dashboard = (props: any) => {
   };
 
   const successCallback = (respoonse: any) => {};
+
+  const createPostResponse = (response: any) => {
+    setRecentPost(response?.data?.post);
+    setPost("");
+  };
+
+  const createPost = () => {
+    const data = {
+      body: {
+        post: post,
+      },
+      successCallback: createPostResponse,
+    };
+    dispatch(addPost(data));
+  };
 
   return (
     <Box
@@ -93,12 +112,20 @@ const Dashboard = (props: any) => {
             id="fullWidth"
             variant="standard"
             value={post}
+            multiline
+            minRows={1}
+            maxRows={4}
             onChange={(event) => setPost(event.target.value)}
           />
-          <Button disabled={post === ""} onClick={() => setPost("")}>
+          <Button disabled={post?.trim() === ""} onClick={createPost}>
             Post
           </Button>
         </Box>
+
+        {Object.keys(recentPost)?.length > 0 && (
+          <Posts post={recentPost} fromUserData={true} />
+        )}
+
         {postData?.data?.length > 0
           ? postData?.data?.map((item: any) => (
               <Posts key={item.id} post={item} />

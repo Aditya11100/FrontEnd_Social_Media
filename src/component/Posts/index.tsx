@@ -18,9 +18,10 @@ dayjs.extend(advancedFormat);
 
 interface PostsProps {
   post: any;
+  fromUserData?: boolean;
 }
 
-const Posts = ({ post }: PostsProps) => {
+const Posts = ({ post, fromUserData }: PostsProps) => {
   const userData = useSelector((state: any) => state?.loginReducer?.userData);
   const [like, setLike] = useState(post?.likes?.includes(userData?._id));
   const [showComment, setShowComment] = useState(false);
@@ -103,7 +104,9 @@ const Posts = ({ post }: PostsProps) => {
             style={{ cursor: "pointer" }}
             variant="subtitle2"
           >
-            {`${post?.postedBy?.firstName} ${post?.postedBy?.lastName}`}
+            {`${
+              fromUserData ? userData?.firstName : post?.postedBy?.firstName
+            } ${fromUserData ? userData?.lastName : post?.postedBy?.lastName}`}
           </Typography>
           <Typography
             style={{ fontSize: 10 }}
