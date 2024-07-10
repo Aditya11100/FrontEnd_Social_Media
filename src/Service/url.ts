@@ -10,4 +10,5 @@ export const url = {
   commentPost: "api/posts/addComment",
   deleteCommentPost: "api/posts/deleteComment",
   addPost: "api/posts/createPost",
+  getRequestList: "api/friend/getRequestList",
 };

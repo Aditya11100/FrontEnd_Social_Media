@@ -127,7 +127,7 @@ export const addPost = createAsyncThunk(
   }
 );
 
-// Create the user slice
+// Create the posts slice
 const postsSlice = createSlice({
   name: "posts",
   initialState: {
